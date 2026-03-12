@@ -2,6 +2,9 @@
 
 In this walkthrough you deploy the NVIDIA RAG Blueprint with Docker Compose for a single node deployment, and using self-hosted on-premises models.
 
+Here is the architecture diagram of the Enterprise RAG Blueprint (we are NOT going to deploy all components):
+
+![test](./democenter-images/lab3-arch_diagram.png)
 
 ## Prerequisites
 
@@ -31,7 +34,7 @@ Use the following procedure to start all containers needed for this blueprint.
 1. Clone git repository and cd into it:
 
    ```bash
-   git clone https://github.com/yxchia98/rag.git rag-blueprint && cd rag-blueprint
+   git clone https://github.com/leewaileongjames/rag.git rag-blueprint && cd rag-blueprint
    ``` 
 
 2. Create a directory to cache the models and export the path to the cache as an environment variable.
@@ -50,9 +53,14 @@ Use the following procedure to start all containers needed for this blueprint.
 
 4. Start all required NIMs by running the following code.
 
-   :::{warning}
-   Do not attempt this step unless you have completed the previous steps.
-   :::
+   ![](./democenter-images/lab3-arch_diagram_1.png)
+
+<br/>
+
+   > [!WARNING]  
+   > Do not attempt this step unless you have completed the previous steps.
+
+<br/>
 
    ```bash
    USERID=$(id -u) docker compose -f deploy/compose/nims.yaml up -d
@@ -60,12 +68,10 @@ Use the following procedure to start all containers needed for this blueprint.
 
    The NIM LLM service can take 30 mins to start for the first time as the model is downloaded and cached. Subsequent deployments can take 2-5 minutes, depending on the GPU profile.
 
-   :::{tip}
-   The models are downloaded and cached in the path specified by `MODEL_DIRECTORY`.
-   :::
+   > [!TIP]  
+   > The models are downloaded and cached in the path specified by `MODEL_DIRECTORY`.
 
-
-5. Check the status of the deployment by running the following code. Wait until all services are up and the `nemoretriever-ranking-ms` and `nemoretriever-embedding-ms` NIMs are in healthy state before proceeding further.
+6. Check the status of the deployment by running the following code. Wait until all services are up and the `nemoretriever-ranking-ms` and `nemoretriever-embedding-ms` NIMs are in healthy state before proceeding further.
 
      ```bash
      watch -n 2 'docker ps --format "table {{.Names}}\t{{.Status}}"'
@@ -84,7 +90,9 @@ Use the following procedure to start all containers needed for this blueprint.
      ```
 
 
-6. Start the vector db containers from the repo root.
+7. Start the vector db containers from the repo root.
+  
+   ![](./democenter-images/lab3-arch_diagram_2.png)
 
    ```bash
    docker compose -f deploy/compose/vectordb.yaml up -d
@@ -92,6 +100,8 @@ Use the following procedure to start all containers needed for this blueprint.
 
 
 7. Start the ingestion containers from the repo root. This pulls the prebuilt containers from NGC and deploys them on your system.
+  
+   ![](./democenter-images/lab3-arch_diagram_3.png)
 
    ```bash
    docker compose -f deploy/compose/docker-compose-ingestor-server.yaml up -d
@@ -145,6 +155,8 @@ Use the following procedure to start all containers needed for this blueprint.
 
 
 8. Start the RAG containers from the repo root. This pulls the prebuilt containers from NGC and deploys them on your system.
+
+   ![](./democenter-images/lab3-arch_diagram_4.png)
 
     ```bash
     docker compose -f deploy/compose/docker-compose-rag-server.yaml up -d
