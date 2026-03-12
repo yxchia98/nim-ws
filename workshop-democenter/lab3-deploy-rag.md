@@ -232,7 +232,12 @@ Use the following procedure to start all containers needed for this blueprint.
 
 After the RAG Blueprint is deployed, you can use the RAG UI to start experimenting with it.
 
-1. Open a web browser and access the RAG UI at [http://localhost:8090](http://localhost:8090) . You can start experimenting by uploading docs and asking questions.
+1. Open a web browser and access the RAG UI at 
+<a href="http://localhost:8090" target="_blank" rel="noopener noreferrer">
+    http://localhost:8090
+</a>. 
+You can start experimenting by uploading docs and asking questions.
+
 
     ![rag-ui](./democenter-images/lab3-ui.png)
 
