@@ -367,6 +367,8 @@ code {
   </script>
 <h1 id="lab-03---get-started-with-the-nvidia-blueprints---enterprise-rag-blueprint">Lab 03 - Get Started With the NVIDIA Blueprints - Enterprise RAG Blueprint</h1>
 <p>In this walkthrough you deploy the NVIDIA RAG Blueprint with Docker Compose for a single node deployment, and using self-hosted on-premises models.</p>
+<p>Here is the architecture diagram of the Enterprise RAG Blueprint (we are NOT going to deploy all components):</p>
+<p><img src="./democenter-images/lab3-arch_diagram.png" alt="test"></p>
 <h2 id="prerequisites">Prerequisites</h2>
 <p>To pull images required by the blueprint from NGC, you must first authenticate Docker with nvcr.io. Use the NGC API Key you created in the first step.</p>
 <pre class="hljs"><code><div><span class="hljs-built_in">echo</span> <span class="hljs-string">"<span class="hljs-variable">${NGC_API_KEY}</span>"</span> | docker login nvcr.io -u <span class="hljs-string">'$oauthtoken'</span> --password-stdin
@@ -383,7 +385,7 @@ If no containers are running, you’ll see a harmless error message.</p>
 <ol>
 <li>
 <p>Clone git repository and cd into it:</p>
-<pre class="hljs"><code><div>git <span class="hljs-built_in">clone</span> https://github.com/yxchia98/rag.git rag-blueprint &amp;&amp; <span class="hljs-built_in">cd</span> rag-blueprint
+<pre class="hljs"><code><div>git <span class="hljs-built_in">clone</span> https://github.com/leewaileongjames/rag.git rag-blueprint &amp;&amp; <span class="hljs-built_in">cd</span> rag-blueprint
 </div></code></pre>
 </li>
 <li>
@@ -399,16 +401,23 @@ If no containers are running, you’ll see a harmless error message.</p>
 </li>
 <li>
 <p>Start all required NIMs by running the following code.</p>
-<div class="{warning}">
-<p>Do not attempt this step unless you have completed the previous steps.</p>
-</div>
+<p><img src="./democenter-images/lab3-arch_diagram_1.png" alt=""></p>
+</li>
+</ol>
+<br/>
+<blockquote>
+<p>[!WARNING]<br>
+Do not attempt this step unless you have completed the previous steps.</p>
+</blockquote>
+<br/>
 <pre class="hljs"><code><div>USERID=$(id -u) docker compose -f deploy/compose/nims.yaml up -d
 </div></code></pre>
 <p>The NIM LLM service can take 30 mins to start for the first time as the model is downloaded and cached. Subsequent deployments can take 2-5 minutes, depending on the GPU profile.</p>
-<div class="{tip}">
-<p>The models are downloaded and cached in the path specified by <code>MODEL_DIRECTORY</code>.</p>
-</div>
-</li>
+<blockquote>
+<p>[!TIP]<br>
+The models are downloaded and cached in the path specified by <code>MODEL_DIRECTORY</code>.</p>
+</blockquote>
+<ol start="6">
 <li>
 <p>Check the status of the deployment by running the following code. Wait until all services are up and the <code>nemoretriever-ranking-ms</code> and <code>nemoretriever-embedding-ms</code> NIMs are in healthy state before proceeding further.</p>
 <pre class="hljs"><code><div>watch -n 2 <span class="hljs-string">'docker ps --format "table {{.Names}}\t{{.Status}}"'</span>
@@ -426,11 +435,13 @@ If no containers are running, you’ll see a harmless error message.</p>
 </li>
 <li>
 <p>Start the vector db containers from the repo root.</p>
+<p><img src="./democenter-images/lab3-arch_diagram_2.png" alt=""></p>
 <pre class="hljs"><code><div>docker compose -f deploy/compose/vectordb.yaml up -d
 </div></code></pre>
 </li>
 <li>
 <p>Start the ingestion containers from the repo root. This pulls the prebuilt containers from NGC and deploys them on your system.</p>
+<p><img src="./democenter-images/lab3-arch_diagram_3.png" alt=""></p>
 <pre class="hljs"><code><div>docker compose -f deploy/compose/docker-compose-ingestor-server.yaml up -d
 </div></code></pre>
 <p>You can check the status of the ingestor-server and running the following code.</p>
@@ -476,6 +487,7 @@ If no containers are running, you’ll see a harmless error message.</p>
 </li>
 <li>
 <p>Start the RAG containers from the repo root. This pulls the prebuilt containers from NGC and deploys them on your system.</p>
+<p><img src="./democenter-images/lab3-arch_diagram_4.png" alt=""></p>
 <pre class="hljs"><code><div>docker compose -f deploy/compose/docker-compose-rag-server.yaml up -d
 </div></code></pre>
 <p>You can check the status of the rag-server by running the following code.</p>
