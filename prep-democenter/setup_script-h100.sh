@@ -2,14 +2,16 @@
 
 # Ensure NGC API Key is provided
 if [ -z "$NGC_API_KEY" ]; then
-  echo "Error: NGC_API_KEY is not set. Please export your NGC API key before proceeding."
-  exit 1
+  echo "NGC_API_KEY is not set. Please enter your NGC API key:"
+  read -s NGC_API_KEY
+  export NGC_API_KEY
 fi
 
 # Ensure Hugging Face API Token is provided
 if [ -z "$HF_TOKEN" ]; then
-  echo "Error: HF_TOKEN is not set. Please export your Hugging Face API token before proceeding."
-  exit 1
+  echo "HF_TOKEN is not set. Please enter your Hugging Face API token:"
+  read -s HF_TOKEN
+  export HF_TOKEN
 fi
 
 # Step 1: Clean the current lab environment
@@ -98,7 +100,7 @@ cp -R ./llama3-8b-instruct-lora_vhf-math-v1 \
 sudo chmod -R 777 $LOCAL_PEFT_DIRECTORY
 
 # Step 10: Make environment variables persistent
-echo "Saving environment variables to ~/.bashrc..."
+echo "Saving environment variables to ~/.bashrc and ~/.profile..."
 
 # Add NGC_API_KEY to ~/.bashrc if not already present
 if ! grep -q "export NGC_API_KEY=" ~/.bashrc; then
@@ -114,6 +116,22 @@ if ! grep -q "export HF_TOKEN=" ~/.bashrc; then
     echo "Persisted HF_TOKEN into ~/.bashrc"
 else
     echo "HF_TOKEN already exists in ~/.bashrc, skipping..."
+fi
+
+# Add NGC_API_KEY to ~/.profile if not already present (for Ubuntu Desktop)
+if ! grep -q "export NGC_API_KEY=" ~/.profile; then
+    echo "export NGC_API_KEY=\"$NGC_API_KEY\"" >> ~/.profile
+    echo "Persisted NGC_API_KEY into ~/.profile"
+else
+    echo "NGC_API_KEY already exists in ~/.profile, skipping..."
+fi
+
+# Add HF_TOKEN to ~/.profile if not already present (for Ubuntu Desktop)
+if ! grep -q "export HF_TOKEN=" ~/.profile; then
+    echo "export HF_TOKEN=\"$HF_TOKEN\"" >> ~/.profile
+    echo "Persisted HF_TOKEN into ~/.profile"
+else
+    echo "HF_TOKEN already exists in ~/.profile, skipping..."
 fi
 
 # Reload bashrc so variables apply immediately
