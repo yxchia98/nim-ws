@@ -70,7 +70,7 @@ docker run -it --rm --gpus all \
 
 # Step 6: Install Hugging Face Tokenizer
 echo "Installing Hugging Face library..."
-pip install -U huggingface_hub
+pip install -U huggingface_hub --break-system-packages
 
 # Step 7: Authenticate with Hugging Face
 echo "Logging into Hugging Face..."
