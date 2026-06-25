@@ -16,6 +16,7 @@ fi
 
 # Step 1: Clean the current lab environment
 echo "Cleaning current lab environment..."
+docker stop $(docker ps -q)
 docker system prune -a -f
 docker volume prune -a -f
 sudo rm -rf ~/app_char_rag.py ~/nvidia-workbench/* ~/Downloads/* ~/Desktop/* /usr/share/ollama/.ollama/models
@@ -25,7 +26,7 @@ echo "Logging into Docker NGC..."
 echo "$NGC_API_KEY" | docker login nvcr.io -u '$oauthtoken' --password-stdin
 
 # Step 3: Pull necessary images
-IMG_NAME="nvcr.io/nim/meta/llama3-8b-instruct:1.0.3"
+IMG_NAME="nvcr.io/nim/openai/gpt-oss-20b:2.0.6"
 TRITON_IMG_NAME="nvcr.io/nvidia/tritonserver:24.06-py3-sdk"
 echo "Pulling images..."
 docker pull $IMG_NAME
@@ -44,13 +45,13 @@ sudo chmod -R 777 "$LOCAL_NIM_CACHE"
 
 # List available model profiles
 echo "Listing model profiles..."
-docker run --rm --runtime=nvidia --gpus=all \
+docker run --rm --runtime=nvidia --gpus='"device=0"' \
 	-e NGC_API_KEY=$NGC_API_KEY \
 	$IMG_NAME \
 	list-model-profiles
 
 # Download normal NIM model cache profile
-MODEL_PROFILE="09e2f8e68f78ce94bf79d15b40a21333cea5d09dbe01ede63f6c957f4fcfab7b"
+MODEL_PROFILE="7db6e396117dddf743fb5cf3171bee34b315aa18713513c3bf9be75d14136216"
 echo "Downloading NIM model cache for profile $MODEL_PROFILE..."
 docker run -it --rm --gpus all \
 	-e NGC_API_KEY \
@@ -59,7 +60,7 @@ docker run -it --rm --gpus all \
     download-to-cache -p $MODEL_PROFILE
 
 # Download LoRA model cache
-LORA_PROFILE="388140213ee9615e643bda09d85082a21f51622c07bde3d0811d7c6998873a0b"
+LORA_PROFILE="9dd35140a6fa83cbb0dbe132885f2b22da0dc8082a124d7f65fad7328b374d9f"
 echo "Downloading LoRA model cache for profile $LORA_PROFILE..."
 docker run -it --rm --gpus all \
 	-e NGC_API_KEY \
@@ -79,7 +80,7 @@ echo "$HF_TOKEN" | hf auth login
 TOKENIZER_DIR=~/tokenizer/hub
 echo "Downloading tokenizer to $TOKENIZER_DIR..."
 mkdir -p $TOKENIZER_DIR
-hf download meta-llama/Meta-Llama-3-8B-Instruct --include "*.json" --cache-dir $TOKENIZER_DIR
+hf download openai/gpt-oss-20b --include "*.json" --cache-dir $TOKENIZER_DIR
 sudo chmod -R 777 $TOKENIZER_DIR
 
 # Step 9: Download LoRA adapters
@@ -89,22 +90,12 @@ mkdir -p $LOCAL_PEFT_DIRECTORY
 
 # Assuming you've downloaded the adapters already into the "prep" directory
 echo "Copying LoRA adapters..."
-cp -R ./llama3-8b-instruct-lora_vhf-math-v1 \
-    ./llama3-8b-instruct-lora_vhf-squad-v1 \
-    ./llama3-8b-instruct-lora_vnemo-math-v1 \
-    ./llama3-8b-instruct-lora_vnemo-squad-v1 \
+cp -R ./gpt-oss-20b-dental-lora \
+    ./gpt-oss-20b-multilingual-reasoner-lora \
     $LOCAL_PEFT_DIRECTORY
 
 # Set permissions for LoRA adapters
-chmod -R 777 $LOCAL_PEFT_DIRECTORY
-
-echo "Copying Workshop Guides..."
-cp -R ../workshop-democenter/lab1-deploying-nims.html \
-    ../workshop-democenter/lab2-running-nim-with-lora-adapter.html \
-    ../workshop-democenter/lab3-deploy-rag.html \
-    ~/Desktop
-    
-chmod -R 777 ~/Desktop
+sudo chmod -R 777 $LOCAL_PEFT_DIRECTORY
 
 # Step 10: Make environment variables persistent
 echo "Saving environment variables to ~/.bashrc and ~/.profile..."

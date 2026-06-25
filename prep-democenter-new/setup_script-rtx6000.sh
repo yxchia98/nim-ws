@@ -80,7 +80,7 @@ echo "$HF_TOKEN" | hf auth login
 TOKENIZER_DIR=~/tokenizer/hub
 echo "Downloading tokenizer to $TOKENIZER_DIR..."
 mkdir -p $TOKENIZER_DIR
-hf download meta-llama/Llama-3.1-8B-Instruct --include "*.json" --cache-dir $TOKENIZER_DIR
+hf download openai/gpt-oss-20b --include "*.json" --cache-dir $TOKENIZER_DIR
 sudo chmod -R 777 $TOKENIZER_DIR
 
 # Step 9: Download LoRA adapters
@@ -90,8 +90,8 @@ mkdir -p $LOCAL_PEFT_DIRECTORY
 
 # Assuming you've downloaded the adapters already into the "prep" directory
 echo "Copying LoRA adapters..."
-cp -R ./llama-3.1-8b-instruct-text-to-sql \
-    ./llama-3.1-8b-instruct-wazuh-assistant \
+cp -R ./gpt-oss-20b-dental-lora \
+    ./gpt-oss-20b-multilingual-reasoner-lora \
     $LOCAL_PEFT_DIRECTORY
 
 # Set permissions for LoRA adapters
