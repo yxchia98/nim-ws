@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>lab2-running-nim-with-lora-adapter.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="%F0%9F%A7%AA-lab-guide-02-running-nvidia-nim-with-lora-low-rank-adaptation">🧪 Lab Guide 02: Running NVIDIA NIM with LoRA (Low-Rank Adaptation)</h1>
+<p>This lab guide walks you through setting up and running an NVIDIA NIM (NVIDIA Inference Microservice) container with <strong>LoRA adapters</strong> for fine-tuned model customization.
+You’ll learn how to configure the environment, launch the container, and query LoRA-enabled models.</p>
+<hr>
+<h2 id="%F0%9F%A7%A9-prerequisites">🧩 Prerequisites</h2>
+<p>Before starting, ensure you have the following:</p>
+<ul>
+<li><strong>Docker</strong> (with NVIDIA Container Toolkit installed)</li>
+<li><strong>NGC API key</strong> (for accessing NVIDIA’s NGC registry)</li>
+<li><strong>GPU-enabled system</strong></li>
+<li><strong>LoRA adapter files</strong></li>
+</ul>
+<hr>
+<h2 id="step-1-stop-all-running-containers">Step 1: Stop All Running Containers</h2>
+<p>Before starting a new container, it’s best to stop any previously running containers to avoid port conflicts or GPU contention.</p>
+<pre class="hljs"><code><div>docker stop $(docker ps -q)
+</div></code></pre>
+<p>This command stops all running Docker containers.
+If no containers are running, you’ll see a harmless error message.</p>
+<hr>
+<h2 id="step-2-set-up-the-lora-directory">Step 2: Set Up the LoRA Directory</h2>
+<p>Define a directory on your host machine to store local LoRA adapter files.</p>
+<pre class="hljs"><code><div><span class="hljs-built_in">export</span> LOCAL_PEFT_DIRECTORY=~/nim/loras
+mkdir -p <span class="hljs-variable">$LOCAL_PEFT_DIRECTORY</span>
+ls <span class="hljs-variable">$LOCAL_PEFT_DIRECTORY</span>
+</div></code></pre>
+<p><img src="./democenter-images/lab2-lora-adapters.png" alt="lora-adapters"></p>
+<p>You will see 4 LoRA adapters, we will be loading these adapters onto our NIM later.</p>
+<p><strong>Explanation:</strong></p>
+<ul>
+<li><code>LOCAL_PEFT_DIRECTORY</code> points to where your LoRA weights/adapters will be stored.</li>
+<li><code>mkdir -p</code> ensures the directory exists (creates it if missing).</li>
+<li>The <code>ls</code> command confirms it’s created correctly.</li>
+</ul>
+<hr>
+<h2 id="step-3-configure-nim-runtime-variables">Step 3: Configure NIM Runtime Variables</h2>
+<p>Set up environment variables for caching, LoRA refresh intervals, and container naming.</p>
+<pre class="hljs"><code><div><span class="hljs-built_in">export</span> LOCAL_NIM_CACHE=~/.cache/nim
+mkdir -p <span class="hljs-string">"<span class="hljs-variable">$LOCAL_NIM_CACHE</span>"</span>
+
+<span class="hljs-built_in">export</span> NIM_PEFT_REFRESH_INTERVAL=3600      <span class="hljs-comment"># Refresh LoRA adapters every 1 hour</span>
+<span class="hljs-built_in">export</span> NIM_PEFT_SOURCE=/tmp/loras          <span class="hljs-comment"># Inside-container LoRA path</span>
+<span class="hljs-built_in">export</span> CONTAINER_NAME=llama3-8b-instruct   <span class="hljs-comment"># Name of the NIM container</span>
+</div></code></pre>
+<p><strong>Explanation:</strong></p>
+<ul>
+<li><code>LOCAL_NIM_CACHE</code> → Local cache directory for NIM models and metadata.</li>
+<li><code>NIM_PEFT_REFRESH_INTERVAL</code> → Automatically refreshes LoRA adapters every 3600 seconds.</li>
+<li><code>NIM_PEFT_SOURCE</code> → Directory inside the container that maps to LoRA files.</li>
+<li><code>CONTAINER_NAME</code> → Container name for easier management.</li>
+</ul>
+<hr>
+<h2 id="step-4-run-nim-with-lora-support">Step 4: Run NIM with LoRA Support</h2>
+<p>Now we can start running an instance of NIM with LoRA support profile:</p>
+<pre class="hljs"><code><div>docker run -itd --rm --name=<span class="hljs-variable">$CONTAINER_NAME</span> \
+    --runtime=nvidia \
+    --gpus all \
+    --shm-size=16GB \
+    -e NGC_API_KEY=<span class="hljs-variable">$NGC_API_KEY</span> \
+    -e NIM_PEFT_SOURCE \
+    -e NIM_PEFT_REFRESH_INTERVAL \
+    -v <span class="hljs-variable">$LOCAL_NIM_CACHE</span>:/opt/nim/.cache \
+    -v <span class="hljs-variable">$LOCAL_PEFT_DIRECTORY</span>:<span class="hljs-variable">$NIM_PEFT_SOURCE</span> \
+    -u $(id -u):$(id -g) \
+    -p 8000:8000 \
+    nvcr.io/nim/meta/llama3-8b-instruct:1.0.3
+</div></code></pre>
+<p><strong>Explanation:</strong></p>
+<ul>
+<li><code>--gpus all</code> enables GPU acceleration.</li>
+<li><code>--shm-size=16GB</code> ensures sufficient shared memory for large models.</li>
+<li><code>-v</code> mounts host directories into the container.</li>
+<li><code>-e</code> sets environment variables for NIM configuration.</li>
+<li><code>-p 8000:8000</code> exposes the inference API on port 8000.</li>
+</ul>
+<p>It will take a while for the model to be deployed (around 1~5 mins). Run the following command to continuously check for GPU utilization, and you should see something like the following:</p>
+<pre class="hljs"><code><div>watch nvidia-smi
+</div></code></pre>
+<p><img src="./democenter-images/lab1-nvidia-smi.png" alt="nvidia-smi-output"></p>
+<p>Once launched, the container will begin serving the NIM API.</p>
+<p>Press <code>CTRL + C</code> to go back and proceed to step 5.</p>
+<hr>
+<h2 id="step-5-list-available-lora-adapters">Step 5: List Available LoRA Adapters</h2>
+<p>Check which LoRA adapters are available and ready for inference.</p>
+<p>This command queries the NIM REST API to retrieve all models and adapters currently loaded in memory.</p>
+<pre class="hljs"><code><div>curl -X GET <span class="hljs-string">'http://0.0.0.0:8000/v1/models'</span> | jq
+</div></code></pre>
+<p><img src="./democenter-images/lab2-lora-endpoint.png" alt="lora-endpoint"></p>
+<p>You will see a response list of models and the lora adapters loaded. Over here we see the <code>llama3-8b-instruct-lora_vnemo-squad-v1</code> adapter which has <code>meta/llama3-8b-instruct</code> as its root model. There is also the default model without adapters on it.</p>
+<hr>
+<h2 id="step-6-query-a-normal-nim-without-lora">Step 6: Query a normal NIM (without LoRA)</h2>
+<p>You can now send a test prompt to the model.
+Before we leverage on a math reasoning LoRA adapter, lets test out the normal model with a math question (LLMs are really bad at math):</p>
+<pre class="hljs"><code><div>curl -X <span class="hljs-string">'POST'</span> \
+  <span class="hljs-string">'http://0.0.0.0:8000/v1/completions'</span> \
+  -H <span class="hljs-string">'accept: application/json'</span> \
+  -H <span class="hljs-string">'Content-Type: application/json'</span> \
+  -d <span class="hljs-string">'{
+    "model": "meta/llama3-8b-instruct",
+    "prompt": "John buys 10 packs of magic cards. Each pack has 20 cards and 1/4 of those cards are uncommon. How many uncommon cards did he get?",
+    "max_tokens": 256
+  }'</span> | jq
+</div></code></pre>
+<p><img src="./democenter-images/lab2-nim-query.png" alt="nim-query"></p>
+<h3 id="as-you-can-see-the-output-becomes-gibberish-and-confuses-us-more-than-actually-giving-us-the-exact-answer">As you can see, the output becomes gibberish and confuses us more than actually giving us the exact answer.</h3>
+<hr>
+<h2 id="step-7-query-a-lora-enhanced-model">Step 7: Query a LoRA-Enhanced Model</h2>
+<p>Now lets send a test prompt to the model that uses the fine-tuned math LoRA adapter.
+This example uses a math reasoning LoRA adapter (<code>lora_vhf-math-v1</code>):</p>
+<pre class="hljs"><code><div>curl -X <span class="hljs-string">'POST'</span> \
+  <span class="hljs-string">'http://0.0.0.0:8000/v1/completions'</span> \
+  -H <span class="hljs-string">'accept: application/json'</span> \
+  -H <span class="hljs-string">'Content-Type: application/json'</span> \
+  -d <span class="hljs-string">'{
+    "model": "llama3-8b-instruct-lora_vhf-math-v1",
+    "prompt": "John buys 10 packs of magic cards. Each pack has 20 cards and 1/4 of those cards are uncommon. How many uncommon cards did he get?",
+    "max_tokens": 256
+  }'</span> | jq
+</div></code></pre>
+<p><img src="./democenter-images/lab2-lora-query.png" alt="nim-lora-query"></p>
+<h3 id="now-with-the-fine-tuned-lora-adapter-loaded-and-queried-we-can-see-a-better-response-that-gives-us-exactly-the-answer-that-we-want">Now with the fine-tuned LoRA adapter loaded and queried, we can see a better response that gives us exactly the answer that we want.</h3>
+<hr>
+<h2 id="%E2%9C%85-summary">✅ Summary</h2>
+<p>In this lab, you have successfully:</p>
+<ul>
+<li>Set up directories for LoRA storage and caching.</li>
+<li>Configured environment variables for NIM runtime.</li>
+<li>Launched the NIM container with GPU support.</li>
+<li>Queried and tested a LoRA-enhanced model through the REST API.</li>
+</ul>
+<hr>
+
+</body>
+</html>

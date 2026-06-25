@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>lab1-deploying-nims.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="%F0%9F%A7%AA-lab-guide-01-running-nvidia-nim-and-genai-perf-benchmark">🧪 Lab Guide 01: Running NVIDIA NIM and GenAI-Perf Benchmark</h1>
+<p>This guide will walk you through setting up a Llama 3.8B Instruct model on NIM and running a GenAI-Perf benchmark using Triton Server.
+You’ll learn how to configure the environment, launch the container, inference with the NVIDIA NIM container.</p>
+<hr>
+<h2 id="%F0%9F%A7%A9-prerequisites">🧩 Prerequisites</h2>
+<p>Before starting, ensure you have the following:</p>
+<ul>
+<li><strong>Docker</strong> (with NVIDIA Container Toolkit installed)</li>
+<li><strong>NGC API key</strong> (for accessing NVIDIA’s NGC registry)</li>
+<li><strong>GPU-enabled system</strong></li>
+</ul>
+<hr>
+<h2 id="1-running-the-nim-model">1. Running the NIM Model</h2>
+<h3 id="step-1-set-up-local-nim-cache">Step 1: Set Up Local Nim Cache</h3>
+<p>First, set up a local cache directory for NIM.</p>
+<pre class="hljs"><code><div><span class="hljs-built_in">export</span> LOCAL_NIM_CACHE=~/.cache/nim
+mkdir -p <span class="hljs-string">"<span class="hljs-variable">$LOCAL_NIM_CACHE</span>"</span>
+</div></code></pre>
+<h3 id="step-2-list-available-model-profiles">Step 2: List Available Model Profiles</h3>
+<p>You can list the available model profiles for the desired model using the following command.</p>
+<pre class="hljs"><code><div>docker run --rm --runtime=nvidia --gpus=all \
+    -e NGC_API_KEY=<span class="hljs-variable">$NGC_API_KEY</span> \
+    nvcr.io/nim/meta/llama3-8b-instruct:1.0.3 \
+    list-model-profiles
+</div></code></pre>
+<h3 id="step-3-start-the-model-server">Step 3: Start the Model Server</h3>
+<p>Run the Llama 3.8B Instruct model on NIM in detached mode.</p>
+<pre class="hljs"><code><div>docker run -itd --name=llama3-8b-instruct --rm \
+    --gpus all \
+    --shm-size=16GB \
+    -e NGC_API_KEY \
+    -v <span class="hljs-string">"<span class="hljs-variable">$LOCAL_NIM_CACHE</span>:/opt/nim/.cache"</span> \
+    -u $(id -u) \
+    -p 8000:8000 \
+    nvcr.io/nim/meta/llama3-8b-instruct:1.0.3
+</div></code></pre>
+<p>It will take a while for the model to be deployed (around 1~5 mins). Run the following command to continuously check for GPU utilization, and you should see something like the following:</p>
+<pre class="hljs"><code><div>watch nvidia-smi
+</div></code></pre>
+<p><img src="./democenter-images/lab1-nvidia-smi.png" alt="nvidia-smi-output"></p>
+<p>Press <code>CTRL + C</code> to go back and proceed to step 4.</p>
+<h3 id="step-4-test-the-model-endpoint">Step 4: Test the Model Endpoint</h3>
+<p>To verify that the model server is running, send a <code>GET</code> request to list the available models.</p>
+<pre class="hljs"><code><div>curl -s -X GET <span class="hljs-string">'http://0.0.0.0:8000/v1/models'</span> | jq
+</div></code></pre>
+<p><img src="./democenter-images/lab1-model-endpoint.png" alt="model-endpoint"></p>
+<h3 id="step-5-test-model-response">Step 5: Test Model Response</h3>
+<p>You can now test the model by sending a <code>POST</code> request with a sample input.</p>
+<pre class="hljs"><code><div>curl -s -X <span class="hljs-string">'POST'</span> \
+<span class="hljs-string">'http://0.0.0.0:8000/v1/chat/completions'</span> \
+-H <span class="hljs-string">'accept: application/json'</span> \
+-H <span class="hljs-string">'Content-Type: application/json'</span> \
+-d <span class="hljs-string">'{
+    "model": "meta/llama3-8b-instruct",
+    "messages": [{"role":"user", "content":"Write a limerick about the wonders of GPU computing."}],
+    "max_tokens": 64
+}'</span> | jq
+</div></code></pre>
+<p>You should see the following response, the LLM response is under the <code>content</code> field:
+<img src="./democenter-images/lab1-model-query.png" alt="model-query"></p>
+<h2 id="2-running-genai-perf-benchmark">2. Running GenAI-Perf Benchmark</h2>
+<h3 id="step-6-copy-the-tokenizer-for-llama-31-8b-instruct">Step 6: Copy the Tokenizer for Llama 3.1 8B Instruct</h3>
+<p>Set the tokenizer for the Llama 3.1 8B Instruct model.</p>
+<pre class="hljs"><code><div><span class="hljs-built_in">export</span> HF_TOKENIZER=~/tokenizer
+</div></code></pre>
+<h3 id="step-7-export-variables-and-run-triton-server">Step 7: Export Variables and Run Triton Server</h3>
+<p>Set the environment variables and run the Triton Server.</p>
+<pre class="hljs"><code><div><span class="hljs-built_in">export</span> RELEASE=<span class="hljs-string">"24.06"</span> <span class="hljs-comment"># Use the latest releases in yy.mm format</span>
+<span class="hljs-built_in">export</span> WORKDIR=~/genai-perf
+mkdir -p <span class="hljs-string">"<span class="hljs-variable">$WORKDIR</span>"</span>
+docker run -it --rm --net=host --gpus=all \
+    -v <span class="hljs-variable">$WORKDIR</span>:/workdir \
+    -v <span class="hljs-variable">$HF_TOKENIZER</span>:/root/.cache/huggingface \
+    nvcr.io/nvidia/tritonserver:<span class="hljs-variable">${RELEASE}</span>-py3-sdk
+</div></code></pre>
+<h3 id="step-8-run-genai-perf-benchmark">Step 8: Run GenAI-Perf Benchmark</h3>
+<p>Run the GenAI-Perf benchmark script on the Triton Server. Allow approximately 30 seconds for the script to complete.</p>
+<pre class="hljs"><code><div><span class="hljs-built_in">export</span> INPUT_SEQUENCE_LENGTH=200
+<span class="hljs-built_in">export</span> INPUT_SEQUENCE_STD=10
+<span class="hljs-built_in">export</span> OUTPUT_SEQUENCE_LENGTH=200
+<span class="hljs-built_in">export</span> CONCURRENCY=10
+<span class="hljs-built_in">export</span> MODEL=meta/llama3-8b-instruct
+
+<span class="hljs-built_in">cd</span> /workdir
+genai-perf \
+    -m <span class="hljs-variable">$MODEL</span> \
+    --endpoint-type chat \
+    --service-kind openai \
+    --streaming \
+    -u localhost:8000 \
+    --synthetic-input-tokens-mean <span class="hljs-variable">$INPUT_SEQUENCE_LENGTH</span> \
+    --synthetic-input-tokens-stddev <span class="hljs-variable">$INPUT_SEQUENCE_STD</span> \
+    --concurrency <span class="hljs-variable">$CONCURRENCY</span> \
+    --output-tokens-mean <span class="hljs-variable">$OUTPUT_SEQUENCE_LENGTH</span> \
+    --extra-inputs max_tokens:<span class="hljs-variable">$OUTPUT_SEQUENCE_LENGTH</span> \
+    --extra-inputs min_tokens:<span class="hljs-variable">$OUTPUT_SEQUENCE_LENGTH</span> \
+    --extra-inputs ignore_eos:<span class="hljs-literal">true</span> \
+    --tokenizer meta-llama/Meta-Llama-3-8B-Instruct \
+    -- \
+    -v \
+    --max-threads=256
+</div></code></pre>
+<p>The benchmark can take up to few minutes, in which once done you will see the following reference benchmark output:</p>
+<p><img src="./democenter-images/lab1-genaiperf-output.png" alt="genaiperf-output"></p>
+<hr>
+<h3 id="step-9-exit-out-of-container">Step 9: Exit out of container</h3>
+<p>Exit out of the current trition container:</p>
+<pre class="hljs"><code><div><span class="hljs-built_in">exit</span>
+</div></code></pre>
+<h2 id="%F0%9F%93%9D-summary">📝 Summary</h2>
+<p>Congratulations! 🎉 You successfully launched the Llama 3 8B Instruct model on NIM, tested it with sample queries, set up Triton Server, and ran a GenAI‑Perf benchmark to measure performance</p>
+<hr>
+
+</body>
+</html>

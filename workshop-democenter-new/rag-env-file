@@ -1,0 +1,47 @@
+# ==========================
+# User / Auth
+# ==========================
+export USERID=$(id -u)
+export NVIDIA_API_KEY=${NGC_API_KEY}
+
+# ==== Endpoints for using on-prem NIMs ====
+export APP_EMBEDDINGS_SERVERURL=nemoretriever-embedding-ms:8000
+export EMBEDDING_NIM_ENDPOINT=http://nemoretriever-embedding-ms:8000/v1
+export APP_RANKING_SERVERURL=nemoretriever-ranking-ms:8000
+export PADDLE_GRPC_ENDPOINT=paddle:8001
+export PADDLE_INFER_PROTOCOL=grpc
+export YOLOX_GRPC_ENDPOINT=page-elements:8001
+export YOLOX_INFER_PROTOCOL=grpc
+export YOLOX_GRAPHIC_ELEMENTS_GRPC_ENDPOINT=graphic-elements:8001
+export YOLOX_GRAPHIC_ELEMENTS_INFER_PROTOCOL=grpc
+export YOLOX_TABLE_STRUCTURE_GRPC_ENDPOINT=table-structure:8001
+export YOLOX_TABLE_STRUCTURE_INFER_PROTOCOL=grpc
+export APP_LLM_SERVERURL=nim-llm:8000
+export SUMMARY_LLM_SERVERURL=nim-llm:8000
+export APP_LLM_MODELNAME='nvidia/llama-3.1-nemotron-nano-8b-v1'
+export SUMMARY_LLM_MODELNAME='nvidia/llama-3.1-nemotron-nano-8b-v1'
+export SUMMARY_LLM='nvidia/llama-3.1-nemotron-nano-8b-v1'
+
+
+# Set GPU IDs for local deployment
+
+# ==== LLM ====
+export LLM_MS_GPU_ID=0
+
+# ==== Embeddings ====
+export EMBEDDING_MS_GPU_ID=0
+
+# ==== Reranker ====
+export RANKING_MS_GPU_ID=0
+
+# ==== Vector DB GPU ID ====
+export VECTORSTORE_GPU_DEVICE_ID=0
+
+# ==== Ingestion NIMs GPU ids ====
+export YOLOX_MS_GPU_ID=0
+export YOLOX_GRAPHICS_MS_GPU_ID=0
+export YOLOX_TABLE_MS_GPU_ID=0
+export PADDLE_MS_GPU_ID=0
+
+# Set absolute path for prompts file
+export PROMPT_CONFIG_FILE=${PWD}/src/nvidia_rag/rag_server/prompt.yaml
