@@ -32,7 +32,7 @@ You can list the available model profiles for the desired model using the follow
 ```bash
 docker run --rm --runtime=nvidia --gpus=all \
     -e NGC_API_KEY=$NGC_API_KEY \
-    nvcr.io/nim/meta/llama-3.1-8b-instruct:2.0.6 \
+    nvcr.io/nim/openai/gpt-oss-20b:2.0.6 \
     list-model-profiles
 ```
 ### Step 3: Start the Model Server
@@ -40,14 +40,14 @@ docker run --rm --runtime=nvidia --gpus=all \
 Run the Llama 3.8B Instruct model on NIM in detached mode.
 
 ```bash
-docker run -itd --name=llama-3.1-8b-instruct --rm \
+docker run -itd --name=gpt-oss-20b --rm \
     --gpus all \
     --shm-size=16GB \
     -e NGC_API_KEY \
     -v "$LOCAL_NIM_CACHE:/opt/nim/.cache" \
     -u $(id -u) \
     -p 8000:8000 \
-    nvcr.io/nim/meta/llama-3.1-8b-instruct:2.0.6
+    nvcr.io/nim/openai/gpt-oss-20b:2.0.6
 ```
 
 It will take a while for the model to be deployed (around 1~5 mins). Run the following command to continuously check for GPU utilization, and you should see something like the following:
@@ -78,7 +78,7 @@ curl -s -X 'POST' \
 -H 'accept: application/json' \
 -H 'Content-Type: application/json' \
 -d '{
-    "model": "meta/llama-3.1-8b-instruct",
+    "model": "meta/llama3-8b-instruct",
     "messages": [{"role":"user", "content":"Write a limerick about the wonders of GPU computing."}],
     "max_tokens": 64
 }' | jq
