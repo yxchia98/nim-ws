@@ -26,7 +26,7 @@ echo "Logging into Docker NGC..."
 echo "$NGC_API_KEY" | docker login nvcr.io -u '$oauthtoken' --password-stdin
 
 # Step 3: Pull necessary images
-IMG_NAME="nvcr.io/nim/meta/llama-3.1-8b-instruct:2.0.6"
+IMG_NAME="nvcr.io/nim/openai/gpt-oss-20b:2.0.6"
 TRITON_IMG_NAME="nvcr.io/nvidia/tritonserver:24.06-py3-sdk"
 echo "Pulling images..."
 docker pull $IMG_NAME
@@ -51,7 +51,7 @@ docker run --rm --runtime=nvidia --gpus='"device=0"' \
 	list-model-profiles
 
 # Download normal NIM model cache profile
-MODEL_PROFILE="c4789f7af56c770c1c88b73da666886365534d6980b6b922b41fd97036c77d73"
+MODEL_PROFILE="7db6e396117dddf743fb5cf3171bee34b315aa18713513c3bf9be75d14136216"
 echo "Downloading NIM model cache for profile $MODEL_PROFILE..."
 docker run -it --rm --gpus all \
 	-e NGC_API_KEY \
@@ -60,7 +60,7 @@ docker run -it --rm --gpus all \
     download-to-cache -p $MODEL_PROFILE
 
 # Download LoRA model cache
-LORA_PROFILE="4d9fed9cb9fa4c5694b793a6421b62077b812e4e0326a10032b948cc9ddc0712"
+LORA_PROFILE="9dd35140a6fa83cbb0dbe132885f2b22da0dc8082a124d7f65fad7328b374d9f"
 echo "Downloading LoRA model cache for profile $LORA_PROFILE..."
 docker run -it --rm --gpus all \
 	-e NGC_API_KEY \
