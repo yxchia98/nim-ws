@@ -37,7 +37,7 @@ docker run --rm --runtime=nvidia --gpus=all \
 ```
 ### Step 3: Start the Model Server
 
-Run the Llama 3.8B Instruct model on NIM in detached mode.
+Run the GPT-OSS-20B Model on NIM in detached mode.
 
 ```bash
 docker run -itd --name=gpt-oss-20b --rm \
@@ -73,14 +73,14 @@ curl -s -X GET 'http://0.0.0.0:8000/v1/models' | jq
 You can now test the model by sending a `POST` request with a sample input.
 
 ```bash
-curl -s -X 'POST' \
+curl -X 'POST' \
 'http://0.0.0.0:8000/v1/chat/completions' \
 -H 'accept: application/json' \
 -H 'Content-Type: application/json' \
 -d '{
-    "model": "meta/llama3-8b-instruct",
-    "messages": [{"role":"user", "content":"Write a limerick about the wonders of GPU computing."}],
-    "max_tokens": 64
+    "model": "openai/gpt-oss-20b",
+    "messages": [{"role":"user", "content":"Which number is larger, 9.11 or 9.8?"}],
+    "max_tokens": 1024
 }' | jq
 ```
 You should see the following response, the LLM response is under the `content` field:
@@ -119,7 +119,7 @@ export INPUT_SEQUENCE_LENGTH=200
 export INPUT_SEQUENCE_STD=10
 export OUTPUT_SEQUENCE_LENGTH=200
 export CONCURRENCY=10
-export MODEL=meta/llama3-8b-instruct
+export MODEL=openai/gpt-oss-20b
 
 cd /workdir
 genai-perf \
@@ -135,7 +135,7 @@ genai-perf \
     --extra-inputs max_tokens:$OUTPUT_SEQUENCE_LENGTH \
     --extra-inputs min_tokens:$OUTPUT_SEQUENCE_LENGTH \
     --extra-inputs ignore_eos:true \
-    --tokenizer meta-llama/Meta-Llama-3-8B-Instruct \
+    --tokenizer openai/gpt-oss-20b \
     -- \
     -v \
     --max-threads=256
@@ -156,7 +156,7 @@ exit
 
 ## 📝 Summary
 
-Congratulations! 🎉 You successfully launched the Llama 3 8B Instruct model on NIM, tested it with sample queries, set up Triton Server, and ran a GenAI‑Perf benchmark to measure performance
+Congratulations! 🎉 You successfully launched the OpenAI GPT-OSS 20B model on NIM, tested it with sample queries, set up Triton Server, and ran a GenAI‑Perf benchmark to measure performance
 
 
 ---

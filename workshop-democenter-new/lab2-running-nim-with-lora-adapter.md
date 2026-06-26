@@ -59,8 +59,10 @@ export LOCAL_NIM_CACHE=~/.cache/nim
 mkdir -p "$LOCAL_NIM_CACHE"
 
 export NIM_PEFT_REFRESH_INTERVAL=3600      # Refresh LoRA adapters every 1 hour
-export NIM_PEFT_SOURCE=/tmp/loras          # Inside-container LoRA path
-export CONTAINER_NAME=llama3-8b-instruct   # Name of the NIM container
+export NIM_PEFT_SOURCE=/opt/nim/loras          # Inside-container LoRA path
+export CONTAINER_NAME=gpt-oss-20b  # Name of the NIM container
+export CUDA_VISIBLE_DEVICES=0
+export NIM_MODEL_PROFILE=9dd35140a6fa83cbb0dbe132885f2b22da0dc8082a124d7f65fad7328b374d9f
 ```
 
 **Explanation:**
@@ -88,7 +90,32 @@ docker run -itd --rm --name=$CONTAINER_NAME \
     -v $LOCAL_PEFT_DIRECTORY:$NIM_PEFT_SOURCE \
     -u $(id -u):$(id -g) \
     -p 8000:8000 \
-    nvcr.io/nim/meta/llama3-8b-instruct:1.0.3
+    nvcr.io/nim/openai/gpt-oss-20b:2.0.6
+```
+
+
+```bash
+docker run -it --rm --gpus all \
+  -v "$LOCAL_NIM_CACHE:/opt/nim/.cache" \
+  -v "$LOCAL_PEFT_DIRECTORY:/opt/nim/loras" \
+  -p 8000:8000 \
+  -e NGC_API_KEY \
+  -e NIM_PEFT_SOURCE=/opt/nim/loras \
+  -e NIM_PEFT_REFRESH_INTERVAL=10 \
+  nvcr.io/nim/openai/gpt-oss-20b:2.0.6
+```
+
+```bash
+docker run -it --rm --gpus all \
+  -v "$LOCAL_NIM_CACHE:/opt/nim/.cache" \
+  -v "$LOCAL_PEFT_DIRECTORY:/opt/nim/loras" \
+  -p 8000:8000 \
+  -e NGC_API_KEY \
+  -e NIM_MODEL_PROFILE \
+  -e CUDA_VISIBLE_DEVICES \
+  -e NIM_PEFT_SOURCE=/opt/nim/loras \
+  -e NIM_PEFT_REFRESH_INTERVAL=10 \
+  nvcr.io/nim/openai/gpt-oss-20b:2.0.6
 ```
 
 **Explanation:**

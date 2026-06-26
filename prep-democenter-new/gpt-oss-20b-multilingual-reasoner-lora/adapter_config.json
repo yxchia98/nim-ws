@@ -1,6 +1,9 @@
 {
   "alpha_pattern": {},
-  "auto_mapping": null,
+  "auto_mapping": {
+    "base_model_class": "GptOssForCausalLM",
+    "parent_library": "transformers.models.gpt_oss.modeling_gpt_oss"
+  },
   "base_model_name_or_path": "openai/gpt-oss-20b",
   "bias": "none",
   "corda_config": null,
@@ -25,13 +28,20 @@
   "rank_pattern": {},
   "revision": null,
   "target_modules": [
+    "q_proj",
     "o_proj",
     "v_proj",
-    "k_proj",
-    "q_proj"
+    "k_proj"
   ],
-  "target_parameters": null,
-  "task_type": "CAUSAL_LM",
+  "target_parameters": [
+    "7.mlp.experts.gate_up_proj",
+    "7.mlp.experts.down_proj",
+    "15.mlp.experts.gate_up_proj",
+    "15.mlp.experts.down_proj",
+    "23.mlp.experts.gate_up_proj",
+    "23.mlp.experts.down_proj"
+  ],
+  "task_type": null,
   "trainable_token_indices": null,
   "use_dora": false,
   "use_qalora": false,
