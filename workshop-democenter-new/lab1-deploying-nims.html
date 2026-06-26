@@ -346,7 +346,7 @@ code {
 	font-size: inherit;
 }
 
-/* Page Break : use <div class="page"/> to insert page break
+/* Page Break : use <div class="page"/> or <div class="page"></div> to insert page break
 -------------------------------------------------------- */
 .page {
 	page-break-after: always;
@@ -365,11 +365,11 @@ code {
           : 'default'
     });
   </script>
-<h1 id="%F0%9F%A7%AA-lab-guide-01-running-nvidia-nim-and-genai-perf-benchmark">🧪 Lab Guide 01: Running NVIDIA NIM and GenAI-Perf Benchmark</h1>
+<h1 id="-lab-guide-01-running-nvidia-nim-and-genai-perf-benchmark">🧪 Lab Guide 01: Running NVIDIA NIM and GenAI-Perf Benchmark</h1>
 <p>This guide will walk you through setting up a Llama 3.8B Instruct model on NIM and running a GenAI-Perf benchmark using Triton Server.
 You’ll learn how to configure the environment, launch the container, inference with the NVIDIA NIM container.</p>
 <hr>
-<h2 id="%F0%9F%A7%A9-prerequisites">🧩 Prerequisites</h2>
+<h2 id="-prerequisites">🧩 Prerequisites</h2>
 <p>Before starting, ensure you have the following:</p>
 <ul>
 <li><strong>Docker</strong> (with NVIDIA Container Toolkit installed)</li>
@@ -381,61 +381,61 @@ You’ll learn how to configure the environment, launch the container, inference
 <h3 id="step-1-set-up-local-nim-cache">Step 1: Set Up Local Nim Cache</h3>
 <p>First, set up a local cache directory for NIM.</p>
 <pre class="hljs"><code><div><span class="hljs-built_in">export</span> LOCAL_NIM_CACHE=~/.cache/nim
-mkdir -p <span class="hljs-string">"<span class="hljs-variable">$LOCAL_NIM_CACHE</span>"</span>
+<span class="hljs-built_in">mkdir</span> -p <span class="hljs-string">&quot;<span class="hljs-variable">$LOCAL_NIM_CACHE</span>&quot;</span>
 </div></code></pre>
 <h3 id="step-2-list-available-model-profiles">Step 2: List Available Model Profiles</h3>
 <p>You can list the available model profiles for the desired model using the following command.</p>
-<pre class="hljs"><code><div>docker run --rm --runtime=nvidia --gpus=all \
+<pre class="hljs"><code><div>docker run --<span class="hljs-built_in">rm</span> --runtime=nvidia --gpus=all \
     -e NGC_API_KEY=<span class="hljs-variable">$NGC_API_KEY</span> \
-    nvcr.io/nim/meta/llama3-8b-instruct:1.0.3 \
+    nvcr.io/nim/openai/gpt-oss-20b:2.0.6 \
     list-model-profiles
 </div></code></pre>
 <h3 id="step-3-start-the-model-server">Step 3: Start the Model Server</h3>
-<p>Run the Llama 3.8B Instruct model on NIM in detached mode.</p>
-<pre class="hljs"><code><div>docker run -itd --name=llama3-8b-instruct --rm \
+<p>Run the GPT-OSS-20B Model on NIM in detached mode.</p>
+<pre class="hljs"><code><div>docker run -itd --name=gpt-oss-20b --<span class="hljs-built_in">rm</span> \
     --gpus all \
     --shm-size=16GB \
     -e NGC_API_KEY \
-    -v <span class="hljs-string">"<span class="hljs-variable">$LOCAL_NIM_CACHE</span>:/opt/nim/.cache"</span> \
-    -u $(id -u) \
+    -v <span class="hljs-string">&quot;<span class="hljs-variable">$LOCAL_NIM_CACHE</span>:/opt/nim/.cache&quot;</span> \
+    -u $(<span class="hljs-built_in">id</span> -u) \
     -p 8000:8000 \
-    nvcr.io/nim/meta/llama3-8b-instruct:1.0.3
+    nvcr.io/nim/openai/gpt-oss-20b:2.0.6
 </div></code></pre>
 <p>It will take a while for the model to be deployed (around 1~5 mins). Run the following command to continuously check for GPU utilization, and you should see something like the following:</p>
 <pre class="hljs"><code><div>watch nvidia-smi
 </div></code></pre>
-<p><img src="./democenter-images/lab1-nvidia-smi.png" alt="nvidia-smi-output"></p>
+<p><img src="./democenter-images/lab1-nvidia-smi-new.png" alt="nvidia-smi-output"></p>
 <p>Press <code>CTRL + C</code> to go back and proceed to step 4.</p>
 <h3 id="step-4-test-the-model-endpoint">Step 4: Test the Model Endpoint</h3>
 <p>To verify that the model server is running, send a <code>GET</code> request to list the available models.</p>
-<pre class="hljs"><code><div>curl -s -X GET <span class="hljs-string">'http://0.0.0.0:8000/v1/models'</span> | jq
+<pre class="hljs"><code><div>curl -s -X GET <span class="hljs-string">&#x27;http://0.0.0.0:8000/v1/models&#x27;</span> | jq
 </div></code></pre>
-<p><img src="./democenter-images/lab1-model-endpoint.png" alt="model-endpoint"></p>
+<p><img src="./democenter-images/lab1-model-endpoint-new.png" alt="model-endpoint"></p>
 <h3 id="step-5-test-model-response">Step 5: Test Model Response</h3>
 <p>You can now test the model by sending a <code>POST</code> request with a sample input.</p>
-<pre class="hljs"><code><div>curl -s -X <span class="hljs-string">'POST'</span> \
-<span class="hljs-string">'http://0.0.0.0:8000/v1/chat/completions'</span> \
--H <span class="hljs-string">'accept: application/json'</span> \
--H <span class="hljs-string">'Content-Type: application/json'</span> \
--d <span class="hljs-string">'{
-    "model": "meta/llama3-8b-instruct",
-    "messages": [{"role":"user", "content":"Write a limerick about the wonders of GPU computing."}],
-    "max_tokens": 64
-}'</span> | jq
+<pre class="hljs"><code><div>curl -X <span class="hljs-string">&#x27;POST&#x27;</span> \
+<span class="hljs-string">&#x27;http://0.0.0.0:8000/v1/chat/completions&#x27;</span> \
+-H <span class="hljs-string">&#x27;accept: application/json&#x27;</span> \
+-H <span class="hljs-string">&#x27;Content-Type: application/json&#x27;</span> \
+-d <span class="hljs-string">&#x27;{
+    &quot;model&quot;: &quot;openai/gpt-oss-20b&quot;,
+    &quot;messages&quot;: [{&quot;role&quot;:&quot;user&quot;, &quot;content&quot;:&quot;Which number is larger, 9.11 or 9.8?&quot;}],
+    &quot;max_tokens&quot;: 1024
+}&#x27;</span> | jq
 </div></code></pre>
 <p>You should see the following response, the LLM response is under the <code>content</code> field:
-<img src="./democenter-images/lab1-model-query.png" alt="model-query"></p>
+<img src="./democenter-images/lab1-model-query-new.png" alt="model-query"></p>
 <h2 id="2-running-genai-perf-benchmark">2. Running GenAI-Perf Benchmark</h2>
-<h3 id="step-6-copy-the-tokenizer-for-llama-31-8b-instruct">Step 6: Copy the Tokenizer for Llama 3.1 8B Instruct</h3>
-<p>Set the tokenizer for the Llama 3.1 8B Instruct model.</p>
+<h3 id="step-6-copy-the-tokenizer-for-gpt-oss-20b">Step 6: Copy the Tokenizer for GPT-OSS-20B</h3>
+<p>Set the tokenizer for the GPT-OSS-20B model.</p>
 <pre class="hljs"><code><div><span class="hljs-built_in">export</span> HF_TOKENIZER=~/tokenizer
 </div></code></pre>
 <h3 id="step-7-export-variables-and-run-triton-server">Step 7: Export Variables and Run Triton Server</h3>
 <p>Set the environment variables and run the Triton Server.</p>
-<pre class="hljs"><code><div><span class="hljs-built_in">export</span> RELEASE=<span class="hljs-string">"24.06"</span> <span class="hljs-comment"># Use the latest releases in yy.mm format</span>
+<pre class="hljs"><code><div><span class="hljs-built_in">export</span> RELEASE=<span class="hljs-string">&quot;24.06&quot;</span> <span class="hljs-comment"># Use the latest releases in yy.mm format</span>
 <span class="hljs-built_in">export</span> WORKDIR=~/genai-perf
-mkdir -p <span class="hljs-string">"<span class="hljs-variable">$WORKDIR</span>"</span>
-docker run -it --rm --net=host --gpus=all \
+<span class="hljs-built_in">mkdir</span> -p <span class="hljs-string">&quot;<span class="hljs-variable">$WORKDIR</span>&quot;</span>
+docker run -it --<span class="hljs-built_in">rm</span> --net=host --gpus=all \
     -v <span class="hljs-variable">$WORKDIR</span>:/workdir \
     -v <span class="hljs-variable">$HF_TOKENIZER</span>:/root/.cache/huggingface \
     nvcr.io/nvidia/tritonserver:<span class="hljs-variable">${RELEASE}</span>-py3-sdk
@@ -446,7 +446,7 @@ docker run -it --rm --net=host --gpus=all \
 <span class="hljs-built_in">export</span> INPUT_SEQUENCE_STD=10
 <span class="hljs-built_in">export</span> OUTPUT_SEQUENCE_LENGTH=200
 <span class="hljs-built_in">export</span> CONCURRENCY=10
-<span class="hljs-built_in">export</span> MODEL=meta/llama3-8b-instruct
+<span class="hljs-built_in">export</span> MODEL=openai/gpt-oss-20b
 
 <span class="hljs-built_in">cd</span> /workdir
 genai-perf \
@@ -462,20 +462,20 @@ genai-perf \
     --extra-inputs max_tokens:<span class="hljs-variable">$OUTPUT_SEQUENCE_LENGTH</span> \
     --extra-inputs min_tokens:<span class="hljs-variable">$OUTPUT_SEQUENCE_LENGTH</span> \
     --extra-inputs ignore_eos:<span class="hljs-literal">true</span> \
-    --tokenizer meta-llama/Meta-Llama-3-8B-Instruct \
+    --tokenizer openai/gpt-oss-20b \
     -- \
     -v \
     --max-threads=256
 </div></code></pre>
 <p>The benchmark can take up to few minutes, in which once done you will see the following reference benchmark output:</p>
-<p><img src="./democenter-images/lab1-genaiperf-output.png" alt="genaiperf-output"></p>
+<p><img src="./democenter-images/lab1-genaiperf-output-new.png" alt="genaiperf-output"></p>
 <hr>
 <h3 id="step-9-exit-out-of-container">Step 9: Exit out of container</h3>
 <p>Exit out of the current trition container:</p>
 <pre class="hljs"><code><div><span class="hljs-built_in">exit</span>
 </div></code></pre>
-<h2 id="%F0%9F%93%9D-summary">📝 Summary</h2>
-<p>Congratulations! 🎉 You successfully launched the Llama 3 8B Instruct model on NIM, tested it with sample queries, set up Triton Server, and ran a GenAI‑Perf benchmark to measure performance</p>
+<h2 id="-summary">📝 Summary</h2>
+<p>Congratulations! 🎉 You successfully launched the OpenAI GPT-OSS 20B model on NIM, tested it with sample queries, set up Triton Server, and ran a GenAI‑Perf benchmark to measure performance</p>
 <hr>
 
 </body>

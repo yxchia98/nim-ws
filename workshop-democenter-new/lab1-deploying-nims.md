@@ -54,7 +54,7 @@ It will take a while for the model to be deployed (around 1~5 mins). Run the fol
 ```bash
 watch nvidia-smi
 ```
-![nvidia-smi-output](./democenter-images/lab1-nvidia-smi.png)
+![nvidia-smi-output](./democenter-images/lab1-nvidia-smi-new.png)
 
 Press `CTRL + C` to go back and proceed to step 4.
 
@@ -65,7 +65,7 @@ To verify that the model server is running, send a `GET` request to list the ava
 ```bash
 curl -s -X GET 'http://0.0.0.0:8000/v1/models' | jq
 ```
-![model-endpoint](./democenter-images/lab1-model-endpoint.png)
+![model-endpoint](./democenter-images/lab1-model-endpoint-new.png)
 
 
 ### Step 5: Test Model Response
@@ -84,13 +84,13 @@ curl -X 'POST' \
 }' | jq
 ```
 You should see the following response, the LLM response is under the `content` field:
-![model-query](./democenter-images/lab1-model-query.png)
+![model-query](./democenter-images/lab1-model-query-new.png)
 
 ## 2. Running GenAI-Perf Benchmark
 
-### Step 6: Copy the Tokenizer for Llama 3.1 8B Instruct
+### Step 6: Copy the Tokenizer for GPT-OSS-20B
 
-Set the tokenizer for the Llama 3.1 8B Instruct model.
+Set the tokenizer for the GPT-OSS-20B model.
 
 ```bash
 export HF_TOKENIZER=~/tokenizer
@@ -142,7 +142,7 @@ genai-perf \
 ```
 The benchmark can take up to few minutes, in which once done you will see the following reference benchmark output:
 
-![genaiperf-output](./democenter-images/lab1-genaiperf-output.png)
+![genaiperf-output](./democenter-images/lab1-genaiperf-output-new.png)
 
 ---
 

@@ -58,19 +58,17 @@ Set up environment variables for caching, LoRA refresh intervals, and container 
 export LOCAL_NIM_CACHE=~/.cache/nim
 mkdir -p "$LOCAL_NIM_CACHE"
 
-export NIM_PEFT_REFRESH_INTERVAL=3600      # Refresh LoRA adapters every 1 hour
+export NIM_PEFT_REFRESH_INTERVAL=60      # Refresh LoRA adapters every minute
 export NIM_PEFT_SOURCE=/opt/nim/loras          # Inside-container LoRA path
 export CONTAINER_NAME=gpt-oss-20b  # Name of the NIM container
-# export NIM_MODEL_PROFILE=9dd35140a6fa83cbb0dbe132885f2b22da0dc8082a124d7f65fad7328b374d9f
 ```
 
 **Explanation:**
 
 * `LOCAL_NIM_CACHE` → Local cache directory for NIM models and metadata.
-* `NIM_PEFT_REFRESH_INTERVAL` → Automatically refreshes LoRA adapters every 3600 seconds.
+* `NIM_PEFT_REFRESH_INTERVAL` → Automatically refreshes LoRA adapters every minute.
 * `NIM_PEFT_SOURCE` → Directory inside the container that maps to LoRA files.
 * `CONTAINER_NAME` → Container name for easier management.
-* `NIM_MODEL_PROFILE` → The LoRA profile that we will be using.
 
 ---
 
@@ -85,7 +83,7 @@ docker run -itd --rm --name=gpt-oss-20b --gpus all \
   -p 8000:8000 \
   -e NGC_API_KEY \
   -e NIM_PEFT_SOURCE=/opt/nim/loras \
-  -e NIM_PEFT_REFRESH_INTERVAL=10 \
+  -e NIM_PEFT_REFRESH_INTERVAL \
   nvcr.io/nim/openai/gpt-oss-20b:2.0.6
 ```
 
