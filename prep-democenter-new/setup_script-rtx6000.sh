@@ -80,7 +80,7 @@ echo "$HF_TOKEN" | hf auth login
 TOKENIZER_DIR=~/tokenizer/hub
 echo "Downloading tokenizer to $TOKENIZER_DIR..."
 mkdir -p $TOKENIZER_DIR
-hf download openai/gpt-oss-20b --include "*.json" --cache-dir $TOKENIZER_DIR
+hf download openai/gpt-oss-20b --include "*.json" --local-dir $TOKENIZER_DIR
 sudo chmod -R 777 $TOKENIZER_DIR
 
 # Step 9: Download LoRA adapters
