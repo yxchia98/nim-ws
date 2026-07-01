@@ -1,5 +1,5 @@
 # 🧪 Lab Guide 01: Running NVIDIA NIM and GenAI-Perf Benchmark
-This guide will walk you through setting up a Llama 3.8B Instruct model on NIM and running a GenAI-Perf benchmark using Triton Server.
+This guide will walk you through setting up a GPT-OSS 20B model on NIM and running a GenAI-Perf benchmark using Triton Server.
 You’ll learn how to configure the environment, launch the container, inference with the NVIDIA NIM container.
 
 ---
