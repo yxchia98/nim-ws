@@ -101,7 +101,7 @@ export HF_TOKENIZER=~/tokenizer
 Set the environment variables and run the Triton Server.
 
 ```bash
-export RELEASE="24.06" # Use the latest releases in yy.mm format
+export RELEASE="26.06" # Use the latest releases in yy.mm format
 export WORKDIR=~/genai-perf
 mkdir -p "$WORKDIR"
 docker run -it --rm --net=host --gpus=all \

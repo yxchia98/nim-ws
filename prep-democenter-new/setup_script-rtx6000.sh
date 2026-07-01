@@ -27,7 +27,7 @@ echo "$NGC_API_KEY" | docker login nvcr.io -u '$oauthtoken' --password-stdin
 
 # Step 3: Pull necessary images
 IMG_NAME="nvcr.io/nim/openai/gpt-oss-20b:2.0.6"
-TRITON_IMG_NAME="nvcr.io/nvidia/tritonserver:24.06-py3-sdk"
+TRITON_IMG_NAME="nvcr.io/nvidia/tritonserver:26.06-py3-sdk"
 echo "Pulling images..."
 docker pull $IMG_NAME
 docker pull $TRITON_IMG_NAME
