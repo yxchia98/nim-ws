@@ -432,7 +432,7 @@ You’ll learn how to configure the environment, launch the container, inference
 </div></code></pre>
 <h3 id="step-7-export-variables-and-run-triton-server">Step 7: Export Variables and Run Triton Server</h3>
 <p>Set the environment variables and run the Triton Server.</p>
-<pre class="hljs"><code><div><span class="hljs-built_in">export</span> RELEASE=<span class="hljs-string">&quot;24.06&quot;</span> <span class="hljs-comment"># Use the latest releases in yy.mm format</span>
+<pre class="hljs"><code><div><span class="hljs-built_in">export</span> RELEASE=<span class="hljs-string">&quot;26.06&quot;</span> <span class="hljs-comment"># Use the latest releases in yy.mm format</span>
 <span class="hljs-built_in">export</span> WORKDIR=~/genai-perf
 <span class="hljs-built_in">mkdir</span> -p <span class="hljs-string">&quot;<span class="hljs-variable">$WORKDIR</span>&quot;</span>
 docker run -it --<span class="hljs-built_in">rm</span> --net=host --gpus=all \
@@ -449,10 +449,10 @@ docker run -it --<span class="hljs-built_in">rm</span> --net=host --gpus=all \
 <span class="hljs-built_in">export</span> MODEL=openai/gpt-oss-20b
 
 <span class="hljs-built_in">cd</span> /workdir
-genai-perf \
+genai-perf profile \
     -m <span class="hljs-variable">$MODEL</span> \
+    --tokenizer <span class="hljs-variable">$MODEL</span> \
     --endpoint-type chat \
-    --service-kind openai \
     --streaming \
     -u localhost:8000 \
     --synthetic-input-tokens-mean <span class="hljs-variable">$INPUT_SEQUENCE_LENGTH</span> \
@@ -462,7 +462,6 @@ genai-perf \
     --extra-inputs max_tokens:<span class="hljs-variable">$OUTPUT_SEQUENCE_LENGTH</span> \
     --extra-inputs min_tokens:<span class="hljs-variable">$OUTPUT_SEQUENCE_LENGTH</span> \
     --extra-inputs ignore_eos:<span class="hljs-literal">true</span> \
-    --tokenizer openai/gpt-oss-20b \
     -- \
     -v \
     --max-threads=256

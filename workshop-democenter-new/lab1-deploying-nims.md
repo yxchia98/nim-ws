@@ -122,10 +122,10 @@ export CONCURRENCY=10
 export MODEL=openai/gpt-oss-20b
 
 cd /workdir
-genai-perf \
+genai-perf profile \
     -m $MODEL \
+    --tokenizer $MODEL \
     --endpoint-type chat \
-    --service-kind openai \
     --streaming \
     -u localhost:8000 \
     --synthetic-input-tokens-mean $INPUT_SEQUENCE_LENGTH \
@@ -135,7 +135,6 @@ genai-perf \
     --extra-inputs max_tokens:$OUTPUT_SEQUENCE_LENGTH \
     --extra-inputs min_tokens:$OUTPUT_SEQUENCE_LENGTH \
     --extra-inputs ignore_eos:true \
-    --tokenizer openai/gpt-oss-20b \
     -- \
     -v \
     --max-threads=256
