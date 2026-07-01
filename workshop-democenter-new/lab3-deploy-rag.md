@@ -34,7 +34,7 @@ Use the following procedure to start all containers needed for this blueprint.
 1. Clone git repository and cd into it:
 
    ```bash
-   git clone https://github.com/leewaileongjames/rag.git rag-blueprint && cd rag-blueprint
+   git clone https://github.com/yxchia98/rag.git rag-blueprint && cd rag-blueprint && git checkout -b democenter-hol
    ``` 
 
 2. Create a directory to cache the models and export the path to the cache as an environment variable.

@@ -346,7 +346,7 @@ code {
 	font-size: inherit;
 }
 
-/* Page Break : use <div class="page"/> to insert page break
+/* Page Break : use <div class="page"/> or <div class="page"></div> to insert page break
 -------------------------------------------------------- */
 .page {
 	page-break-after: always;
@@ -371,7 +371,7 @@ code {
 <p><img src="./democenter-images/lab3-arch_diagram.png" alt="test"></p>
 <h2 id="prerequisites">Prerequisites</h2>
 <p>To pull images required by the blueprint from NGC, you must first authenticate Docker with nvcr.io. Use the NGC API Key you created in the first step.</p>
-<pre class="hljs"><code><div><span class="hljs-built_in">echo</span> <span class="hljs-string">"<span class="hljs-variable">${NGC_API_KEY}</span>"</span> | docker login nvcr.io -u <span class="hljs-string">'$oauthtoken'</span> --password-stdin
+<pre class="hljs"><code><div><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;<span class="hljs-variable">${NGC_API_KEY}</span>&quot;</span> | docker login nvcr.io -u <span class="hljs-string">&#x27;$oauthtoken&#x27;</span> --password-stdin
 </div></code></pre>
 <h2 id="stop-all-running-containers">Stop All Running Containers</h2>
 <p>Before starting this lab, it’s best to stop any previously running containers to avoid port conflicts or GPU contention.</p>
@@ -385,12 +385,12 @@ If no containers are running, you’ll see a harmless error message.</p>
 <ol>
 <li>
 <p>Clone git repository and cd into it:</p>
-<pre class="hljs"><code><div>git <span class="hljs-built_in">clone</span> https://github.com/leewaileongjames/rag.git rag-blueprint &amp;&amp; <span class="hljs-built_in">cd</span> rag-blueprint
+<pre class="hljs"><code><div>git <span class="hljs-built_in">clone</span> https://github.com/yxchia98/rag.git rag-blueprint &amp;&amp; <span class="hljs-built_in">cd</span> rag-blueprint &amp;&amp; git checkout -b democenter-hol
 </div></code></pre>
 </li>
 <li>
 <p>Create a directory to cache the models and export the path to the cache as an environment variable.</p>
-<pre class="hljs"><code><div>mkdir -p ~/.cache/model-cache
+<pre class="hljs"><code><div><span class="hljs-built_in">mkdir</span> -p ~/.cache/model-cache
 <span class="hljs-built_in">export</span> MODEL_DIRECTORY=~/.cache/model-cache
 </div></code></pre>
 </li>
@@ -410,7 +410,7 @@ If no containers are running, you’ll see a harmless error message.</p>
 Do not attempt this step unless you have completed the previous steps.</p>
 </blockquote>
 <br/>
-<pre class="hljs"><code><div>USERID=$(id -u) docker compose -f deploy/compose/nims.yaml up -d
+<pre class="hljs"><code><div>USERID=$(<span class="hljs-built_in">id</span> -u) docker compose -f deploy/compose/nims.yaml up -d
 </div></code></pre>
 <p>The NIM LLM service can take 30 mins to start for the first time as the model is downloaded and cached. Subsequent deployments can take 2-5 minutes, depending on the GPU profile.</p>
 <blockquote>
@@ -420,7 +420,7 @@ The models are downloaded and cached in the path specified by <code>MODEL_DIRECT
 <ol start="6">
 <li>
 <p>Check the status of the deployment by running the following code. Wait until all services are up and the <code>nemoretriever-ranking-ms</code> and <code>nemoretriever-embedding-ms</code> NIMs are in healthy state before proceeding further.</p>
-<pre class="hljs"><code><div>watch -n 2 <span class="hljs-string">'docker ps --format "table {{.Names}}\t{{.Status}}"'</span>
+<pre class="hljs"><code><div>watch -n 2 <span class="hljs-string">&#x27;docker ps --format &quot;table {{.Names}}\t{{.Status}}&quot;&#x27;</span>
 </div></code></pre>
 <p>Your output should look similar to the following.</p>
 <pre class="hljs"><code><div>   NAMES                                   STATUS
@@ -445,40 +445,40 @@ The models are downloaded and cached in the path specified by <code>MODEL_DIRECT
 <pre class="hljs"><code><div>docker compose -f deploy/compose/docker-compose-ingestor-server.yaml up -d
 </div></code></pre>
 <p>You can check the status of the ingestor-server and running the following code.</p>
-<pre class="hljs"><code><div>curl -X <span class="hljs-string">'GET'</span> <span class="hljs-string">'http://localhost:8082/v1/health?check_dependencies=true'</span> -H <span class="hljs-string">'accept: application/json'</span> | jq
+<pre class="hljs"><code><div>curl -X <span class="hljs-string">&#x27;GET&#x27;</span> <span class="hljs-string">&#x27;http://localhost:8082/v1/health?check_dependencies=true&#x27;</span> -H <span class="hljs-string">&#x27;accept: application/json&#x27;</span> | jq
 </div></code></pre>
 <p>You should see output similar to the following.</p>
 <pre class="hljs"><code><div>{
-    <span class="hljs-string">"message"</span>: <span class="hljs-string">"Service is up."</span>,
-    <span class="hljs-string">"databases"</span>: [
+    <span class="hljs-string">&quot;message&quot;</span>: <span class="hljs-string">&quot;Service is up.&quot;</span>,
+    <span class="hljs-string">&quot;databases&quot;</span>: [
         ...
     ],
-    <span class="hljs-string">"object_storage"</span>: [
+    <span class="hljs-string">&quot;object_storage&quot;</span>: [
         ...
     ],
-    <span class="hljs-string">"nim"</span>: [
+    <span class="hljs-string">&quot;nim&quot;</span>: [
         {
-            <span class="hljs-string">"service"</span>: <span class="hljs-string">"Embeddings"</span>,
-            <span class="hljs-string">"status"</span>: <span class="hljs-string">"healthy"</span>,
+            <span class="hljs-string">&quot;service&quot;</span>: <span class="hljs-string">&quot;Embeddings&quot;</span>,
+            <span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;healthy&quot;</span>,
             ...
         },
         {
-            <span class="hljs-string">"service"</span>: <span class="hljs-string">"Summary LLM"</span>,
-            <span class="hljs-string">"status"</span>: <span class="hljs-string">"healthy"</span>,
+            <span class="hljs-string">&quot;service&quot;</span>: <span class="hljs-string">&quot;Summary LLM&quot;</span>,
+            <span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;healthy&quot;</span>,
             ...
         }
     ],
-    <span class="hljs-string">"processing"</span>: [
+    <span class="hljs-string">&quot;processing&quot;</span>: [
         {
-            <span class="hljs-string">"service"</span>: <span class="hljs-string">"NV-Ingest"</span>,
-            <span class="hljs-string">"status"</span>: <span class="hljs-string">"healthy"</span>,
+            <span class="hljs-string">&quot;service&quot;</span>: <span class="hljs-string">&quot;NV-Ingest&quot;</span>,
+            <span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;healthy&quot;</span>,
             ...
         }
     ],
-    <span class="hljs-string">"task_management"</span>: [
+    <span class="hljs-string">&quot;task_management&quot;</span>: [
         {
-            <span class="hljs-string">"service"</span>: <span class="hljs-string">"Redis"</span>,
-            <span class="hljs-string">"status"</span>: <span class="hljs-string">"healthy"</span>,
+            <span class="hljs-string">&quot;service&quot;</span>: <span class="hljs-string">&quot;Redis&quot;</span>,
+            <span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;healthy&quot;</span>,
             ...
         }
     ]
@@ -491,31 +491,31 @@ The models are downloaded and cached in the path specified by <code>MODEL_DIRECT
 <pre class="hljs"><code><div>docker compose -f deploy/compose/docker-compose-rag-server.yaml up -d
 </div></code></pre>
 <p>You can check the status of the rag-server by running the following code.</p>
-<pre class="hljs"><code><div>curl -X <span class="hljs-string">'GET'</span> <span class="hljs-string">'http://localhost:8081/v1/health?check_dependencies=true'</span> -H <span class="hljs-string">'accept: application/json'</span> | jq
+<pre class="hljs"><code><div>curl -X <span class="hljs-string">&#x27;GET&#x27;</span> <span class="hljs-string">&#x27;http://localhost:8081/v1/health?check_dependencies=true&#x27;</span> -H <span class="hljs-string">&#x27;accept: application/json&#x27;</span> | jq
 </div></code></pre>
 <p>You should see output similar to the following.</p>
 <pre class="hljs"><code><div>{
-    <span class="hljs-string">"message"</span>: <span class="hljs-string">"Service is up."</span>,
-    <span class="hljs-string">"databases"</span>: [
+    <span class="hljs-string">&quot;message&quot;</span>: <span class="hljs-string">&quot;Service is up.&quot;</span>,
+    <span class="hljs-string">&quot;databases&quot;</span>: [
         ...
     ],
-    <span class="hljs-string">"object_storage"</span>: [
+    <span class="hljs-string">&quot;object_storage&quot;</span>: [
         ...
     ],
-    <span class="hljs-string">"nim"</span>: [
+    <span class="hljs-string">&quot;nim&quot;</span>: [
     {
-        <span class="hljs-string">"service"</span>: <span class="hljs-string">"LLM"</span>,
-        <span class="hljs-string">"status"</span>: <span class="hljs-string">"healthy"</span>,
+        <span class="hljs-string">&quot;service&quot;</span>: <span class="hljs-string">&quot;LLM&quot;</span>,
+        <span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;healthy&quot;</span>,
         ...
     },
     {
-        <span class="hljs-string">"service"</span>: <span class="hljs-string">"Embeddings"</span>,
-        <span class="hljs-string">"status"</span>: <span class="hljs-string">"healthy"</span>,
+        <span class="hljs-string">&quot;service&quot;</span>: <span class="hljs-string">&quot;Embeddings&quot;</span>,
+        <span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;healthy&quot;</span>,
         ...
     },
     {
-        <span class="hljs-string">"service"</span>: <span class="hljs-string">"Ranking"</span>,
-        <span class="hljs-string">"status"</span>: <span class="hljs-string">"healthy"</span>,
+        <span class="hljs-string">&quot;service&quot;</span>: <span class="hljs-string">&quot;Ranking&quot;</span>,
+        <span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;healthy&quot;</span>,
         ...
     }
   ]
@@ -524,7 +524,7 @@ The models are downloaded and cached in the path specified by <code>MODEL_DIRECT
 </li>
 <li>
 <p>Check the status of the deployment by running the following code.</p>
-<pre class="hljs"><code><div>docker ps --format <span class="hljs-string">"table {{.ID}}\t{{.Names}}\t{{.Status}}"</span>
+<pre class="hljs"><code><div>docker ps --format <span class="hljs-string">&quot;table {{.ID}}\t{{.Names}}\t{{.Status}}&quot;</span>
 </div></code></pre>
 <p>You should see output similar to the following. Confirm all the following containers are running.</p>
 <pre class="hljs"><code><div>NAMES                                   STATUS
